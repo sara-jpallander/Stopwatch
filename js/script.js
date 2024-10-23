@@ -1,7 +1,7 @@
 // 1. Variables for buttons
 
-const startStopBtn = document.querySelector('startStopBtn');
-const resetBtn = document.querySelector('resetBtn');
+const startStopBtn = document.getElementById('startStopBtn');
+const resetBtn = document.getElementById('resetBtn');
 
 // 2. Variables for time values
 
@@ -14,6 +14,12 @@ let hours = 0;
 let leadingSeconds = 0;
 let leadingMinutes = 0;
 let leadingHours = 0;
+
+// 5. Variables for holding the setInterval method & timer status
+
+let timerInterval = null;    // To stop the timer from starting as soon
+                             // as the page loads.
+let timerStatus = "stopped"; // For when we want to pause the timer.
 
 /* 3.0 Stopwatch function - letting the application know when to increment 
 to the next number, from seconds to minutes to hours. */
@@ -54,6 +60,39 @@ function stopWatch() {
     leadingHours + ":" + leadingMinutes + ":" + leadingSeconds; 
     /* 3.4 to display the timer in action, in the browser */
 }   // 4.2 Change variables to leadingHrs/Mins/Secs to display all zeros
-                                           
+                            
 
-/* window.setInterval(stopWatch, 1000); */
+// 6.0 Adding functionality to the start/pause button.
+
+startStopBtn.addEventListener('click', function(){
+    /* When the play button is clicked the timeInterval will start the
+    the timer and change the play icon to the pause icon. 
+    The timerStatus will then be overwritten as started. */
+    if(timerStatus === "stopped") {
+        timerInterval = window.setInterval(stopWatch, 1000);
+        document.getElementById('startStopBtn').innerHTML = `<i class="fa-solid fa-pause" id="pause"></i>`;
+        timerStatus = "started";
+        /* timerStatus starts as stopped because we set it as such
+         when we declared the variable further up so the timer isn't 
+         set off when the page is loaded. */
+    } else {
+        window.clearInterval(timerInterval);
+        document.getElementById('startStopBtn').innerHTML = `<i class="fa-solid fa-play" id="play"></i>`;
+        timerStatus = "stopped";
+        /* When you press the pause button the interval will be
+        cleared (0) - meaning the timer is now stopped and the pause icon
+        changes back to the play icon again. */
+    }
+});
+
+// 6.1 Adding functionality to the reset button.
+
+resetBtn.addEventListener('click', function() {
+    
+    window.clearInterval(timerInterval);
+    seconds = 0;
+    minutes = 0;
+    hours = 0;
+
+    document.getElementById('timer').innerHTML = "00:00:00";
+});
